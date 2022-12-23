@@ -46,7 +46,7 @@ async def cmd_start(message: types.Message):
         input_field_placeholder="Choose what to do"
     )
     await message.answer(
-        "Hi! This bot is for translating and transcribing messages.\nFor transcribing press 'Transcribe' and follow the instructions.\nFor translating press 'Translate' and follow the instructions (you will be able to choose a language).\n^-^",
+        "Hi! This bot is for translating, converting text to audio and transcribing messages. Choose an option and follow the instructions (you will be able to choose a language).\n^-^",
         reply_markup=keyboard)
 
 
@@ -54,7 +54,7 @@ async def cmd_start(message: types.Message):
 async def choosing_lang(message: types.Message):
     global operation_ind
     operation_ind = 'translate'
-    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True)
     huge_kb.add('ru', 'en', 'be')
     huge_kb.add('uk', 'pl', 'kk')
     huge_kb.add('fr', 'eo', 'tr')
@@ -129,7 +129,7 @@ async def translation_res_send(message: types.Message, state: FSMContext):
 async def choosing_lang(message: types.Message):
     global operation_ind
     operation_ind = 'convert_to_audio'
-    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True)
     huge_kb.add('ru', 'en', 'pl')
     huge_kb.add('fr', 'tr', 'uk')
     huge_kb.add('/help')
@@ -143,7 +143,7 @@ async def choosing_lang(message: types.Message):
 async def transcription(message: types.Message):
     global operation_ind
     operation_ind = 'transcribe'
-    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True)
     huge_kb.add('ru', 'en')
     huge_kb.add('/help')
 
