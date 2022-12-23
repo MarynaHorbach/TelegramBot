@@ -5,6 +5,11 @@ googletrans==3.1.0a0
 aiogram-2.23.1
 playsound-1.3.0
 SpeechRecognition-3.9.0 pydub-0.25.1
+ffmpeg-1.4
+Installing collected packages: websockets, srt, pycparser, cffi, vosk
+Successfully installed cffi-1.15.1 pycparser-2.21 srt-3.5.2 vosk-0.3.45 websockets-10.4
+pysoundfile-0.9.0.post1
+Requirement already satisfied: pydub in /home/maryna/.local/lib/python3.10/site-packages (0.25.1)
 
 
 'be': 'belarusian',
@@ -16,4 +21,7 @@ SpeechRecognition-3.9.0 pydub-0.25.1
     'ru': 'russian',
     'uk': 'ukrainian',
     'tr': 'turkish',
-    
+
+
+
+

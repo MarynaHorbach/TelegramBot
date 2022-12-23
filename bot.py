@@ -1,3 +1,5 @@
+from pathlib import Path
+import subprocess
 import googletrans
 import aiogram
 from aiogram import Bot, Dispatcher, executor, types
@@ -9,6 +11,9 @@ from aiogram.dispatcher.filters import Text
 from gtts import gTTS
 from playsound import playsound
 from aiogram.dispatcher.filters.state import State, StatesGroup
+import speech_recognition as sr
+import soundfile as sf
+from pydub import AudioSegment
 
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
@@ -67,6 +72,8 @@ async def translation_res_send(message: types.Message):
     if operation_ind == 'translate' or operation_ind == 'convert_to_audio':
         await Form.text_to_pr.set()
         await message.reply("Send your text")
+    elif operation_ind == 'transcribe':
+        await message.reply("Send your voice message or audio file (it should be longer than 5 seconds)")
 
 
 @dp.message_handler(state=Form.text_to_pr)
@@ -134,7 +141,102 @@ async def choosing_lang(message: types.Message):
 
 @dp.message_handler(aiogram.dispatcher.filters.Text(equals="Transcribe"))
 async def transcription(message: types.Message):
-    await message.reply("Will be implemented soon")
+    global operation_ind
+    operation_ind = 'transcribe'
+    huge_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    huge_kb.add('ru', 'en')
+    huge_kb.add('/help')
+
+    await message.answer(
+        "Choose a language:\nru - russian\nen - english",
+        reply_markup=huge_kb)
+
+
+@dp.message_handler(content_types=[
+    types.ContentType.AUDIO,
+    types.ContentType.DOCUMENT
+]
+)
+async def voice_message_handler(message: types.Message):
+    global lang_index
+    if message.content_type == types.ContentType.VOICE:
+        file_id = message.voice.file_id
+    elif message.content_type == types.ContentType.AUDIO:
+        file_id = message.audio.file_id
+    elif message.content_type == types.ContentType.DOCUMENT:
+        file_id = message.document.file_id
+    else:
+        await message.reply("Wrong format(\nTry again")
+        return
+
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    if file_path[-4:] == ".mp3":
+        file_on_disk = Path("", "temp.mp3")
+        await bot.download_file(file_path, destination=file_on_disk)
+        await message.reply("Received. Please, wait for a bit)")
+        sound = AudioSegment.from_mp3("temp.mp3")
+        sound.export("temp.wav", format="wav")
+
+        try:
+            r = sr.Recognizer()
+            user_audio_file = sr.AudioFile("temp.wav")
+            with user_audio_file as source:
+                user_audio = r.record(source)
+            text = r.recognize_google(user_audio, language=lang_index)
+            await message.reply(text)
+        except:
+            await message.reply("Sorry... It's too hard to transcribe (or too short)")
+
+    elif file_path[-4:] == ".wav":
+        file_on_disk = Path("", "temp.wav")
+        await bot.download_file(file_path, destination=file_on_disk)
+        await message.reply("Received. Please, wait for a bit)")
+
+        try:
+            r = sr.Recognizer()
+            user_audio_file = sr.AudioFile("temp.wav")
+            with user_audio_file as source:
+                user_audio = r.record(source)
+            text = r.recognize_google(user_audio, language=lang_index)
+            await message.reply(text)
+        except:
+            await message.reply("Sorry... It's too hard to transcribe (or too short)")
+
+    else:
+        await message.reply("Wrong format, try mp3, wav or voice message.")
+
+
+@dp.message_handler(content_types=[
+    types.ContentType.VOICE
+]
+)
+async def voice_message_handler(message: types.Message):
+    if message.content_type == types.ContentType.VOICE:
+        file_id = message.voice.file_id
+    else:
+        await message.reply("Wrong format(\nTry again")
+        return
+
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    file_on_disk = Path("", "temp.oga")
+    await bot.download_file(file_path, destination=file_on_disk)
+
+    await message.reply("Received. Please, wait for a bit)")
+
+    data, samplerate = sf.read('temp.oga')
+    sf.write('temp.wav', data, samplerate)
+    try:
+        r = sr.Recognizer()
+        user_audio_file = sr.AudioFile("temp.wav")
+        with user_audio_file as source:
+            user_audio = r.record(source)
+        global lang_index
+        text = r.recognize_google(user_audio, language=lang_index)
+        await message.reply(text)
+    except:
+        await message.reply("Sorry... It's too hard to transcribe (or too short)")
 
 
 def translate_text_to_lang(message, lang):
