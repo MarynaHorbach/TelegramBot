@@ -1,8 +1,8 @@
-version: "1.0"
+version: "3.9"
 services:
   service:
     image: "mpgorbach/mybot:latest"
-    command: "python3 /bot.py"
+    command: "python3 ./bot.py"
     environment:
       - token=${token}
   shit_box:
