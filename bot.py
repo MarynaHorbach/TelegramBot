@@ -221,10 +221,9 @@ async def voice_message_handler(message: types.Message):
     await bot.download_file(file_path, destination=file_on_disk)
 
     await message.reply("Received. Please, wait for a bit)")
-
-    data, samplerate = sf.read('temp.oga')
-    sf.write('temp.wav', data, samplerate)
     try:
+        data, samplerate = sf.read('temp.oga')
+        sf.write('temp.wav', data, samplerate)
         r = sr.Recognizer()
         user_audio_file = sr.AudioFile("temp.wav")
         with user_audio_file as source:

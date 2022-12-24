@@ -4,9 +4,7 @@ aiogram==2.23.1
 SpeechRecognition==3.9.0
 pydub==0.25.1
 ffmpeg==1.4
-pysoundfile==0.9.0.post1
+PySoundFile==0.9.0.post1
 pydub==0.25.1
-
-
-
-
+soundfile
+numpy
