@@ -1,0 +1,12 @@
+gTTS==2.3.0
+googletrans==3.1.0a0
+aiogram==2.23.1
+SpeechRecognition==3.9.0
+pydub==0.25.1
+ffmpeg==1.4
+pysoundfile==0.9.0.post1
+pydub==0.25.1
+
+
+
+

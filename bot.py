@@ -1,5 +1,4 @@
 from pathlib import Path
-import subprocess
 import googletrans
 import aiogram
 from aiogram import Bot, Dispatcher, executor, types
@@ -7,9 +6,7 @@ import os
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Text
 from gtts import gTTS
-from playsound import playsound
 from aiogram.dispatcher.filters.state import State, StatesGroup
 import speech_recognition as sr
 import soundfile as sf
