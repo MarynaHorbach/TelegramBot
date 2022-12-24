@@ -1,7 +1,7 @@
 version: "1.0"
 services:
   service:
-    image: "my_image:latest"
+    image: "mpgorbach/mybot:latest"
     command: "python3 /bot.py"
     environment:
       - token=${token}
